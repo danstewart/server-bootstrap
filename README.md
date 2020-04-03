@@ -10,4 +10,4 @@ Direct:
 `sudo ./bootstrap.sh`
 
 In script:
-`[[ -f /bootstrapped ]] || bash <(curl -s https://mywebsite.com/myscript.txt)`
+`[[ -f /bootstrapped ]] || bash <(curl -s https://raw.githubusercontent.com/danstewart/server-bootstrap/master/bootstrap.sh)`
