@@ -27,7 +27,8 @@ setsebool -P httpd_can_network_connect on
 chcon -Rt httpd_sys_content_t /data/www
 
 # certbot cron
-echo "0 0,12 * * * root python -c 'import random; import time; time.sleep(random.random() * 3600)' && certbot renew -q" | tee -a /etc/crontab > /dev/null
+cronline="0 0,12 * * * root python -c 'import random; import time; time.sleep(random.random() * 3600)' && certbot renew -q"
+(crontab -l; echo "$cronline") | uniq - | crontab -
 
 # Done
 dt=$(date +%Y=%m-%d)
