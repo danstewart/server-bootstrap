@@ -13,7 +13,7 @@ declare -A users=( ["dstewart"]=1 )
 
 for user in ${!users[@]}; do
 	useradd "$user"
-  
+
 	if [[ ${users[$user]} == 1 ]]; then
   		usermod -aG wheel "$user"
 	fi
@@ -50,6 +50,7 @@ mkdir -p /etc/nginx/sites-available
 mkdir -p /etc/nginx/sites-enabled
 systemctl enable nginx
 systemctl start nginx
+chown -R nginx:nginx /data/www
 
 
 # mariadb
