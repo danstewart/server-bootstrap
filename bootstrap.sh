@@ -33,6 +33,7 @@ done
 # SSH Config
 echo "== Configuring ssh =="
 printf "Port 22\nPermitRootLogin no\nAllowUsers dstewart\n" >> /etc/ssh/sshd_config
+systemctl restart sshd
 
 
 # Standard dependencies
