@@ -6,10 +6,43 @@ if [ "$EUID" -ne 0 ]; then
 	exit
 fi
 
+
+# Users
+echo "== Creating Users =="
+declare -A users=( ["dstewart"]=1 )
+
+for user in ${!users[@]}; do
+	useradd "$user"
+  
+	if [[ ${users[$user]} == 1 ]]; then
+  		usermod -aG wheel "$user"
+	fi
+	
+	# Copy authorized keys
+	mkdir -p /home/$user/.ssh
+	cp /root/.ssh/authorized_keys
+	chown ${user}:${user} -R /home/$user/.ssh
+	chmod 700 /home/$user/.ssh
+	chmod 600 /home/$user/.ssh/authorized_keys
+	
+	echo "Please set a password for $user: "
+	passwd "$user"
+done
+
+
+# SSH Config
+echo "== Configuring ssh =="
+printf "Port 22\nPermitRootLogin no\nAllowUsers dstewart\n" >> /etc/ssh/sshd_config
+
+
 # Standard dependencies
-dnf install -y git httpie mariadb mariadb-server mariadb-devel nginx certbot certbot-nginx
+echo "== Updating and installing dependencies =="
+dnf update -y
+dnf install -y git vim cronie httpie mariadb mariadb-server mariadb-devel nginx certbot certbot-nginx
+
 
 # nginx
+echo "== Configuring nginx =="
 mkdir -p /data/www/
 cp config/nginx.conf /etc/nginx/
 mkdir -p /etc/nginx/sites-available
@@ -17,19 +50,29 @@ mkdir -p /etc/nginx/sites-enabled
 systemctl enable nginx
 systemctl start nginx
 
+
 # mariadb
+echo "== Configuring mariadb =="
 systemctl enable mariadb.service
 systemctl start mariadb.service
 /usr/bin/mysql_secure_installation
 
+
 # SELinux
+echo "== Configuring SELinux =="
 setsebool -P httpd_can_network_connect on
 chcon -Rt httpd_sys_content_t /data/www
 
-# certbot cron
+
+# Cron
+echo "== Adding cron tasks =="
+sudo systemctl enable crond
+sudo systemctl start crond
 cronline="0 0,12 * * * root python -c 'import random; import time; time.sleep(random.random() * 3600)' && certbot renew -q"
 (crontab -l; echo "$cronline") | uniq - | crontab -
+
 
 # Done
 dt=$(date +%Y=%m-%d)
 echo $dt > /bootstrapped
+echo "== Done =="
