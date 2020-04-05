@@ -45,7 +45,7 @@ dnf install -y git vim cronie httpie mariadb mariadb-server mariadb-devel nginx 
 # nginx
 echo "== Configuring nginx =="
 mkdir -p /data/www/
-cp config/nginx.conf /etc/nginx/
+curl https://raw.githubusercontent.com/danstewart/server-bootstrap/master/config/nginx.conf -o /etc/nginx/nginx.conf
 mkdir -p /etc/nginx/sites-available
 mkdir -p /etc/nginx/sites-enabled
 systemctl enable nginx
