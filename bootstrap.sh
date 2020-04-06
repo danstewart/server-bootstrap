@@ -86,6 +86,6 @@ cronline="0 0,12 * * * root python -c 'import random; import time; time.sleep(ra
 
 
 # Done
-dt=$(date +%Y=%m-%d)
+dt=$(date +%Y-%m-%d)
 echo $dt > /bootstrapped
 echo "== Done =="
