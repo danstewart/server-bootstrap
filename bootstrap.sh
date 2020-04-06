@@ -1,19 +1,22 @@
 #!/usr/bin/env bash
 
 # Must be root
-if [ "$EUID" -ne 0 ]; then
+if [[ "$EUID" != 0 ]]; then
 	echo 'ERROR: Run as root'
 	exit
 fi
 
 
 # Users
-echo "== Creating Users =="
+echo "== Creating Users and Groups =="
 declare -A users=( ["dstewart"]=1 )
+
+groupadd code
 
 for user in ${!users[@]}; do
 	useradd "$user"
-
+	
+	usermod -a -G code "$user"
 	if [[ ${users[$user]} == 1 ]]; then
   		usermod -aG wheel "$user"
 	fi
@@ -51,6 +54,20 @@ mkdir -p /etc/nginx/sites-enabled
 systemctl enable nginx
 systemctl start nginx
 chown -R nginx:nginx /data/www
+usermod -a -G code nginx
+
+
+# set up code dir
+echo "== Creating /code =="
+mkdir -p /code
+chgrp -R code /code
+chown g+s /code
+
+
+# SELinux
+echo "== Configuring SELinux =="
+chcon -Rt httpd_sys_content_t /code
+chcon -Rt httpd_sys_content_t /data/www
 
 
 # mariadb
@@ -58,12 +75,6 @@ echo "== Configuring mariadb =="
 systemctl enable mariadb.service
 systemctl start mariadb.service
 /usr/bin/mysql_secure_installation
-
-
-# SELinux
-echo "== Configuring SELinux =="
-setsebool -P httpd_can_network_connect on
-chcon -Rt httpd_sys_content_t /data/www
 
 
 # Cron
