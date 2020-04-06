@@ -20,7 +20,7 @@ for user in ${!users[@]}; do
 	
 	# Copy authorized keys
 	mkdir -p /home/$user/.ssh
-	cp /root/.ssh/authorized_keys
+	cp /root/.ssh/authorized_keys /home/$user/.ssh/
 	chown ${user}:${user} -R /home/$user/.ssh
 	chmod 700 /home/$user/.ssh
 	chmod 600 /home/$user/.ssh/authorized_keys
