@@ -81,8 +81,8 @@ systemctl start mariadb.service
 echo "== Adding cron tasks =="
 sudo systemctl enable crond
 sudo systemctl start crond
-cronline="0 0,12 * * * root python -c 'import random; import time; time.sleep(random.random() * 3600)' && certbot renew -q"
-(crontab -l; echo "$cronline") | uniq - | crontab -
+cronline="0 0,12 * * * python -c 'import random; import time; time.sleep(random.random() * 3600)' && certbot renew -q"
+(crontab -l 2>/dev/null; echo "$cronline") | uniq - | crontab -
 
 
 # Done
