@@ -42,7 +42,7 @@ systemctl restart sshd
 # Standard dependencies
 echo "== Updating and installing dependencies =="
 dnf update -y
-dnf install -y git vim cronie httpie mariadb mariadb-server mariadb-devel nginx certbot certbot-nginx
+dnf install -y git vim cronie httpie mariadb mariadb-server mariadb-devel nginx certbot certbot-nginx podman
 
 
 # nginx
