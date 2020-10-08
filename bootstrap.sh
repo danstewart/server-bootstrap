@@ -68,6 +68,7 @@ chmod -R 2775 /code
 echo "== Configuring SELinux =="
 chcon -Rt httpd_sys_content_t /code
 chcon -Rt httpd_sys_content_t /data/www
+setsebool httpd_can_network_connect 1 -P
 
 
 # mariadb
