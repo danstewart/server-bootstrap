@@ -35,7 +35,7 @@ done
 
 # SSH Config
 echo "== Configuring ssh =="
-printf "Port 22\nPermitRootLogin no\nAllowUsers dstewart\n" >> /etc/ssh/sshd_config
+curl https://raw.githubusercontent.com/danstewart/server-bootstrap/master/config/sshd_config -o /etc/ssh/sshd_config
 systemctl restart sshd
 
 
