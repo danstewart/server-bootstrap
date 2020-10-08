@@ -61,7 +61,7 @@ usermod -a -G code nginx
 echo "== Creating /code =="
 mkdir -p /code
 chgrp -R code /code
-chown g+s /code
+chmod -R 2775 /code
 
 
 # SELinux
